@@ -1,6 +1,8 @@
 # VbsScheduler
 自訂天數以管理員權限執行VBS
 
+需下載.NET 9.0 Runtime才能執行VbsScheduler.exe
+
 # run_config.ini 設定檔
 
 IntervalDays=30 30天執行一次
