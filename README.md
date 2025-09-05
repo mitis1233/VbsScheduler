@@ -7,6 +7,6 @@
 
 IntervalDays=30 30天執行一次
 
-LastRunDate=0001-01-01T00:00:00.0000000 最後執行日期
+LastRunDate=2025-09-06 最後執行日期
 
-VbsPath=C:\請在此處填寫您的腳本路徑\script.vbs 執行vbs檔案位置
+ScriptPath=C:\請在此處填寫您的腳本路徑\script.ps1 執行ps1檔案位置
