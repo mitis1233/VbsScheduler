@@ -5,7 +5,7 @@ public class AppConfig
 {
     public int IntervalDays { get; set; } = 30;
     public DateTime LastRunDate { get; set; } = DateTime.MinValue;
-    public string VbsPath { get; set; } = @"C:\請在此處填寫您的腳本路徑\script.vbs";
+    public string ScriptPath { get; set; } = @"C:\請在此處填寫您的腳本路徑\script.ps1";
 }
 
 public static class ConfigManager
@@ -25,7 +25,7 @@ public static class ConfigManager
 
         var lines = File.ReadAllLines(ConfigFilePath);
         bool intervalDaysFound = false;
-        bool vbsPathFound = false;
+        bool scriptPathFound = false;
 
         foreach (var line in lines)
         {
@@ -54,15 +54,15 @@ public static class ConfigManager
                         config.LastRunDate = date;
                     }
                     break;
-                case "vbspath":
-                    config.VbsPath = value;
-                    vbsPathFound = true;
+                case "scriptpath":
+                    config.ScriptPath = value;
+                    scriptPathFound = true;
                     break;
             }
         }
 
         // 如果現有設定檔缺少項目，則補全並重新儲存
-        if (!intervalDaysFound || !vbsPathFound)
+        if (!intervalDaysFound || !scriptPathFound)
         {
             SaveConfig(config);
         }
@@ -73,8 +73,8 @@ public static class ConfigManager
     public static void SaveConfig(AppConfig config)
     {
         string content = $"IntervalDays={config.IntervalDays}\n" +
-                         $"LastRunDate={config.LastRunDate:o}\n" +
-                         $"VbsPath={config.VbsPath}\n";
+                         $"LastRunDate={config.LastRunDate:yyyy-MM-dd}\n" +
+                         $"ScriptPath={config.ScriptPath}\n";
         File.WriteAllText(ConfigFilePath, content);
     }
 }

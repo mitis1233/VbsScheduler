@@ -9,13 +9,13 @@ public static class Logger
     {
         try
         {
-            string logMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}";
+            string logMessage = $"[{DateTime.Now:yyyy-MM-dd}] {message}";
             
             // 寫入主控台
             Console.WriteLine(logMessage);
             
-            // 附加到日誌檔案
-            File.AppendAllText(LogFilePath, logMessage + Environment.NewLine);
+            // 附加到日誌檔案 (已停用)
+            // File.AppendAllText(LogFilePath, logMessage + Environment.NewLine);
         }
         catch (Exception ex)
         {
@@ -24,7 +24,7 @@ public static class Logger
         }
     }
 
-    public static void LogError(string message, Exception ex = null)
+    public static void LogError(string message, Exception? ex = null)
     {
         string errorMessage = $"錯誤: {message}";
         if (ex != null)

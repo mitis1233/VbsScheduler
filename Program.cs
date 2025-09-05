@@ -38,9 +38,9 @@ public class Program
         Logger.Log($"設定已載入。執行間隔天數: {config.IntervalDays}, 上次執行日期: {config.LastRunDate:yyyy-MM-dd}");
 
         // 2. 驗證設定
-        if (string.IsNullOrEmpty(config.VbsPath) || config.VbsPath.EndsWith("Path\\To\\Your\\Script.vbs"))
+        if (string.IsNullOrEmpty(config.ScriptPath) || config.ScriptPath.EndsWith("Path\\To\\Your\\Script.ps1"))
         {
-            Logger.LogError("VBS 腳本路徑尚未設定。請編輯 run_config.ini 檔案。");
+            Logger.LogError("腳本路徑尚未設定。請編輯 run_config.ini 檔案。");
             return;
         }
 
@@ -53,34 +53,36 @@ public class Program
         }
 
         // 4. 執行腳本
-        Logger.Log($"已到達執行間隔，正在嘗試執行 VBS 腳本: {config.VbsPath}");
+        Logger.Log($"已到達執行間隔，正在嘗試執行腳本: {config.ScriptPath}");
         try
         {
-            ExecuteVbs(config.VbsPath);
-            Logger.Log("VBS 腳本執行成功。");
-
-            // 5. 更新設定檔
-            config.LastRunDate = today;
-            ConfigManager.SaveConfig(config);
-            Logger.Log($"成功更新上次執行日期為 {today:yyyy-MM-dd}。");
+            ExecuteScript(config.ScriptPath);
+            Logger.Log("腳本執行成功。");
         }
         catch (Exception ex)
         {
-            Logger.LogError($"執行 VBS 腳本失敗。", ex);
+            Logger.LogError($"執行腳本失敗。", ex);
+        }
+        finally
+        {
+            // 即使失敗也更新日期
+            config.LastRunDate = today;
+            ConfigManager.SaveConfig(config);
+            Logger.Log($"更新上次執行日期為 {today:yyyy-MM-dd}。");
         }
     }
 
-    private static void ExecuteVbs(string scriptPath)
+    private static void ExecuteScript(string scriptPath)
     {
         if (!File.Exists(scriptPath))
         {
-            throw new FileNotFoundException("找不到 VBS 腳本檔案。", scriptPath);
+            throw new FileNotFoundException("找不到腳本檔案。", scriptPath);
         }
 
         var startInfo = new ProcessStartInfo
         {
-            FileName = "cscript.exe",
-            Arguments = $"//Nologo \"{scriptPath}\"",
+            FileName = "powershell.exe",
+            Arguments = $"-ExecutionPolicy Bypass -File \"{scriptPath}\"",
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
